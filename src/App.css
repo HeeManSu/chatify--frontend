@@ -1,0 +1,42 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizzing: broder-box;
+}
+
+.gradient1 {
+  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgb(71, 191, 125) 0%,
+    rgb(66, 234, 142) 100%
+  );
+}
+
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  overflow: -moz-scrollbars-none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.shadow1 {
+  box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px,
+    rgba(17, 17, 26, 0.1) 0px 0px 8px;
+}
+
+.backgroundimage {
+  background-image: url("./assets/bg.svg");
+  background-repeat: no-repeat;
+  background-position: right;
+  /* background-attachment: fixed; */
+}
+.login-mobile-bg {
+  background-image: url("./assets/wave.svg");
+  background-repeat: no-repeat;
+  background-position-y: bottom;
+}
