@@ -7,7 +7,7 @@ import linkedin from "../assets/linkedin.svg";
 import twitter from "../assets/twitter.svg";
 import discord from "../assets/discord.svg";
 import github from "../assets/github.svg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/reducers/userSlice";
 
 const LoginPage = () => {
@@ -15,11 +15,10 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.user.loading);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(username);
-    console.log(password);
     dispatch(loginUser({ username, password }));
   };
 
@@ -78,6 +77,7 @@ const LoginPage = () => {
                   />
                 </div>
                 <Button
+                  isLoading={isLoading}
                   _hover={{
                     backgroundColor: "blue.400",
                   }}
