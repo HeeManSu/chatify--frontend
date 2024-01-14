@@ -1,49 +1,43 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios"
-const server = "http://localhost:4004/api/v1";
+import { loginUserService } from "../../services";
+import toast from "react-hot-toast";
 
 
-export const registerUser = createAsyncThunk('registerUser', async formData => {
+export const registerUser = createAsyncThunk('registerUser', async (formData, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`${server}/register`,
-            formData,
-            {
-                headers: {
-                    'Content-type': 'multipart/form-data',
-                },
-                withCredentials: true,
-            }
-        )
-        console.log(response);
+        const response = registerUserService(formData);
         return response.data;
     } catch (error) {
-        throw new Error(error)
+        if (!error.response) {
+            throw error;
+        }
+        return rejectWithValue({
+            message: error.response.data.message,
+            status: error.response.status,
+            success: error.response.data.success,
+        });
     }
 })
 
 
-export const loginUser = createAsyncThunk('loginUser', async ({ username, password }) => {
+export const loginUser = createAsyncThunk('loginUser', async ({ username, password }, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`${server}/login`,
-            { username, password },
-            {
-                headers: {
-                    "Content-Type": 'application/json',
-                },
-                withCredentials: true,
-            }
-        );
-        console.log("response: ", response);
-
+        const response = await loginUserService({ username, password });
         const user = response.data;
         localStorage.setItem("userInfo", JSON.stringify(user));
         return response.data;
-
     } catch (error) {
-        throw new Error(error);
+        if (!error.response) {
+            throw error;
+        }
+        return rejectWithValue({
+            message: error.response.data.message,
+            status: error.response.status,
+            success: error.response.data.success,
+        });
     }
-})
 
+})
 
 export const userSlice = createSlice({
     name: 'user',
@@ -51,7 +45,7 @@ export const userSlice = createSlice({
         // loading: false,
         error: null,
         message: null,
-        // isAuthenticated: false
+        isAuthenticated: localStorage.getItem("userInfo") ? true : false,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -71,6 +65,7 @@ export const userSlice = createSlice({
                 state.loading = false;
                 state.isAuthenticated = false;
                 state.error = action.payload;
+                toast.error(action.payload.message);
             })
             .addCase(loginUser.pending, (state) => {
                 state.loading = true;
@@ -84,7 +79,8 @@ export const userSlice = createSlice({
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
                 state.isAuthenticated = false;
-                state.error = action.payload
+                state.error = action.payload;
+                toast.error(action.payload.message);
             })
     }
 })
