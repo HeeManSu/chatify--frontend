@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { loginUserService } from "../../services";
+import { loginUserService, registerUserService } from "../../services";
 import toast from "react-hot-toast";
 
 
 export const registerUser = createAsyncThunk('registerUser', async (formData, { rejectWithValue }) => {
     try {
-        const response = registerUserService(formData);
+        const response = await registerUserService(formData);
         return response.data;
     } catch (error) {
+        console.log(error);
         if (!error.response) {
             throw error;
         }

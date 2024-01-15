@@ -14,8 +14,9 @@ const ChatPage = () => {
   return (
     <>
       <CreateChatButton />
-      {chats.map((conversation) => {
-        return <div>{conversation.name}</div>;
+      {chats.map((chat) => {
+        if (chat.isGroupChat) return <div>{chat.name}</div>;
+        return <div>{chat.user.name}</div>;
       })}
       {chats.length === 0 && <div>No conversations</div>}
     </>

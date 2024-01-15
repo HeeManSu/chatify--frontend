@@ -34,7 +34,7 @@ export const chatSlice = createSlice({
             })
             .addCase(getChats.fulfilled, (state, action) => {
                 state.loading = false;
-                state.conversations = action.payload.chats;
+                state.chats = action.payload.chats;
             })
             .addCase(getChats.rejected, (state, action) => {
                 state.loading = false;
