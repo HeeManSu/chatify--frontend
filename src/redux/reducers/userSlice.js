@@ -8,7 +8,6 @@ export const registerUser = createAsyncThunk('registerUser', async (formData, { 
         const response = await registerUserService(formData);
         return response.data;
     } catch (error) {
-        console.log(error);
         if (!error.response) {
             throw error;
         }
