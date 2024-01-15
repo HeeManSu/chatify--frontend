@@ -25,8 +25,13 @@ export const chatSlice = createSlice({
         chats: [],
         loading: false,
         error: null,
+        selectedChat: null,
     },
-    reducers: {},
+    reducers: {
+        selectChat: (state, action) => {
+            state.selectedChat = action.payload;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getChats.pending, (state) => {
@@ -43,3 +48,5 @@ export const chatSlice = createSlice({
     }
 
 })
+
+export const { selectChat } = chatSlice.actions;

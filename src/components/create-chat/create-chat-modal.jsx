@@ -25,6 +25,7 @@ import {
 import { searchUsers } from "../../services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { cn } from "../../utils/cn";
+import { SmallCloseIcon } from "@chakra-ui/icons";
 function CreateChatModal({ isOpen, onClose }) {
   const [username, setUsername] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]); // [1]
@@ -90,6 +91,7 @@ function CreateChatModal({ isOpen, onClose }) {
                 rounded={20}
                 mr={2}
                 mb={2}
+                className="relative border-b last:border-b-0"
               >
                 <div className="flex items-center p-1">
                   <Avatar
@@ -100,6 +102,21 @@ function CreateChatModal({ isOpen, onClose }) {
                   />
                   {user.name}
                 </div>
+                <Badge
+                  cursor="pointer"
+                  onClick={() => {
+                    setSelectedUsers((prev) =>
+                      prev.filter((u) => u._id !== user._id)
+                    );
+                  }}
+                  className="absolute -top-1 -right-2"
+                  colorScheme="red"
+                  width={5}
+                  height={5}
+                  rounded="full"
+                >
+                  <SmallCloseIcon />
+                </Badge>
               </Badge>
             ))}
           </div>
@@ -110,7 +127,7 @@ function CreateChatModal({ isOpen, onClose }) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <Card size="sm" variant="outline" borderTop={0}>
+            <Card size="sm" borderTop={0}>
               <CardBody>
                 {isLoading && <div>Loading...</div>}
                 {users?.map((user) => {

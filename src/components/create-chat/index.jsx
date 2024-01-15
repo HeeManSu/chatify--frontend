@@ -9,6 +9,7 @@ function CreateChatButton() {
     <>
       <IconButton
         colorScheme="blue"
+        size="sm"
         aria-label="Create chat"
         onClick={personalChatDisclosure.onOpen}
       >

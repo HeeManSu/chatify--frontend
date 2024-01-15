@@ -7,7 +7,6 @@ import ChatPage from "./Pages/ChatPage";
 import ProtectedRoute from "./components/hoc/protected-route";
 import AuthRoute from "./components/hoc/auth-route";
 function App() {
-
   return (
     <Router>
       <>
@@ -35,7 +34,9 @@ function App() {
                 <ChatPage />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route path=":chatId" element={<ChatPage />} />
+          </Route>
         </Routes>
         <Toaster />
       </>
