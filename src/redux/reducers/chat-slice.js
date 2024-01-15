@@ -1,16 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getChatsService } from "../../services/chat";
 
-export const getConversations = createAsyncThunk('getConversations', async (formData, { rejectWithValue }) => {
+export const getChats = createAsyncThunk('getChats', async (_, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${server}/conversations`,
-            {
-                withCredentials: true,
-            }
-        )
-        console.log(response);
+        const response = await getChatsService();
         return response.data;
     }
     catch (error) {
+        console.log(error);
         if (!error.response) {
             throw error;
         }
@@ -22,23 +19,24 @@ export const getConversations = createAsyncThunk('getConversations', async (form
     }
 })
 
-export const conversationSlice = createSlice({
-    name: 'conversation',
+export const chatSlice = createSlice({
+    name: 'chat',
     initialState: {
-        conversations: [],
+        chats: [],
         loading: false,
         error: null,
     },
+    reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getConversations.pending, (state) => {
+            .addCase(getChats.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(getConversations.fulfilled, (state, action) => {
+            .addCase(getChats.fulfilled, (state, action) => {
                 state.loading = false;
-                state.conversations = action.payload.conversations;
+                state.conversations = action.payload.chats;
             })
-            .addCase(getConversations.rejected, (state, action) => {
+            .addCase(getChats.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             })
