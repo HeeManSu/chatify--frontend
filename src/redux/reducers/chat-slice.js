@@ -7,7 +7,6 @@ export const getChats = createAsyncThunk('getChats', async (_, { rejectWithValue
         return response.data;
     }
     catch (error) {
-        console.log(error);
         if (!error.response) {
             throw error;
         }
