@@ -29,6 +29,11 @@
     rgba(17, 17, 26, 0.1) 0px 0px 8px;
 }
 
+.shadow2{
+  box-shadow: 0px 0px 24px 0px rgba(0, 0, 0, 0.08);
+
+}
+
 .backgroundimage {
   background-image: url("./assets/bg.svg");
   background-repeat: no-repeat;
