@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios"
-const server = "http://localhost:4004/api/v1";
+const server = "http://localhost:4002/api/v1";
 
 
 export const registerUser = createAsyncThunk('registerUser', async formData => {
@@ -14,7 +14,7 @@ export const registerUser = createAsyncThunk('registerUser', async formData => {
                 withCredentials: true,
             }
         )
-        console.log(response);
+        // console.log(response);
         return response.data;
     } catch (error) {
         throw new Error(error)
@@ -38,6 +38,32 @@ export const loginUser = createAsyncThunk('loginUser', async ({ username, passwo
         const user = response.data;
         localStorage.setItem("userInfo", JSON.stringify(user));
         return response.data;
+
+    } catch (error) {
+        throw new Error(error);
+    }
+})
+
+export const searchUser = createAsyncThunk('searchUsers', async (search) => {
+    try {
+        const { data } = await axios.get(`${server}/searchuser`, {
+            params: { search },
+            withCredentials: true,
+        });
+        // console.log("data users: ", data.users)
+        return data.users;
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
+export const loadUser = createAsyncThunk('loadUser', async () => {
+    try {
+        const { data } = await axios.get(`${server}/me`, {
+            withCredentials: true,
+        });
+        localStorage.setItem("userInfo", JSON.stringify(data.user))
+        return data.user;
 
     } catch (error) {
         throw new Error(error);
@@ -85,6 +111,28 @@ export const userSlice = createSlice({
                 state.loading = false;
                 state.isAuthenticated = false;
                 state.error = action.payload
+            })
+            .addCase(searchUser.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(searchUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.users = action.payload;
+            })
+            .addCase(searchUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error;
+            })
+            .addCase(loadUser.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(loadUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload;
+            })
+            .addCase(loadUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error;
             })
     }
 })
