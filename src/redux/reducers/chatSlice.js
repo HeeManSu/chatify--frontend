@@ -2,12 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const server = "http://localhost:4002/api/v1";
 
-
-
-export const createPersonChat = createAsyncThunk('createNewChat', async (secondUserId) => {
+export const createPersonChat = createAsyncThunk('createNewChat', async (secondUserName) => {
     try {
         const response = await axios.post(`${server}/personchat`,
-            { secondUserId },
+            { secondUserName },
             {
                 withCredentials: true
             }
@@ -15,6 +13,18 @@ export const createPersonChat = createAsyncThunk('createNewChat', async (secondU
         return response.data;
     } catch (error) {
         throw new Error(error);
+    }
+});
+
+export const fetchAllChats = createAsyncThunk('fetchAllChats', async () => {
+    try {
+        const response = await axios.get(`${server}/`,
+            {
+                withCredentials: true
+            });
+        return response.data
+    } catch (error) {
+        throw new Error(error)
     }
 })
 
@@ -27,8 +37,13 @@ export const chatSlice = createSlice({
         chat: null,
         message: null,
         error: null,
+        chats: null,
+        activeChat: null,
     },
     reducers: {
+        updateActiveChat: (state, action) => {
+            return { ...state, activeChat: action.payload.activeChat };
+        },
         clearError: state => {
             state.error = null;
         },
@@ -51,7 +66,20 @@ export const chatSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             })
+            .addCase(fetchAllChats.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchAllChats.fulfilled, (state, action) => {
+                state.loading = false;
+                state.chats = action.payload.chats;
+                state.message = action.payload.message;
+                state.error = null;
+            })
+            .addCase(fetchAllChats.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
     }
 })
 
-export const {clearError, clearMessage} = chatSlice.actions;
+export const { clearError, clearMessage, updateActiveChat } = chatSlice.actions;

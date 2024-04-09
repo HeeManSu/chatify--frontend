@@ -6,6 +6,7 @@ import LoginPage from './Pages/LoginPage';
 import ChatPage from './Pages/ChatPage';
 import { useSelector } from 'react-redux';
 import { ProtectedRoute } from 'protected-route-react'
+import SelectedChat from './components/SelectedChat';
 
 
 function App() {
@@ -35,7 +36,7 @@ function App() {
 
           } />
           <Route path='/chat' element={<ChatPage />} />
-          <Route path='/:chatId' element={<ChatPage />} />
+          <Route path='/chat/:chatId' element={<SelectedChat />} />
         </Routes>
         <Toaster />
       </>

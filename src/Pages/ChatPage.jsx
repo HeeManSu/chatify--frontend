@@ -1,5 +1,4 @@
 import { FiMoreVertical } from "react-icons/fi";
-// import { FiSearch } from "react-icons/fi";
 import { FiBell } from "react-icons/fi";
 import {
   Menu,
@@ -8,65 +7,16 @@ import {
   MenuItem,
   Button,
   Tabs, TabList, TabPanels, Tab, TabPanel, MenuGroup, MenuDivider,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
-  FormControl,
-  FormLabel,
-  // FormErrorMessage,
-  // FormHelperText,
-  Input,
-  Avatar,
-  Box,
-  SkeletonCircle,
-  SkeletonText,
 } from '@chakra-ui/react'
 import { FiPlusCircle } from "react-icons/fi";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { searchUser } from "../redux/reducers/userSlice";
-import { clearError, clearMessage, createPersonChat } from "../redux/reducers/chatSlice";
-import toast from "react-hot-toast";
-
+import CreatePersonChat from "../components/CreatePersonChat";
+import PersonChat from "../components/PersonChat";
+// import PersonChat from "../components/PersonChat";
 
 const ChatPage = () => {
 
-  const { users, loading } = useSelector(state => state.user);
-  const { chat, message, error } = useSelector(state => state.chat);
-
-  console.log("chat", chat);
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [username, setUsername] = useState("");
-  const dispatch = useDispatch();
-
-  const handleSearchClick = (e) => {
-    const newUserName = e.target.value;
-    setUsername(newUserName)
-    dispatch(searchUser(newUserName))
-  }
-
-  const handleCloseModal = () => {
-    setUsername("");
-    onClose();
-  }
-
-  const accessChat = (id) => {
-    dispatch(createPersonChat(id));
-    if (error) {
-      toast.error(error);
-      dispatch(clearError())
-    }
-    if (message) {
-      toast.success(message);
-      dispatch(clearMessage());
-    }
-  }
 
   return (
     <div className="h-full w-full">
@@ -89,60 +39,7 @@ const ChatPage = () => {
                   <MenuGroup fontWeight={"semibold"} title="Create New Chat">
                     <MenuDivider />
                     <MenuItem onClick={onOpen}>Person Chat</MenuItem>
-                    <Modal size='xl' isOpen={isOpen} onClose={onClose}>
-                      <ModalOverlay />
-                      <ModalContent className="mx-6">
-                        <ModalHeader>New person chat</ModalHeader>
-                        <ModalCloseButton onClick={handleCloseModal} />
-                        <ModalBody>
-                          <FormControl>
-                            <FormLabel>
-                              <Input
-                                required
-                                id="username"
-                                name="username"
-                                type="text"
-                                placeholder="Enter a username"
-                                value={username}
-                                onChange={handleSearchClick}
-                              />
-                            </FormLabel>
-                          </FormControl>
-                          <div className="flex flex-col pt-4">
-                            {loading ? (
-                              <Box padding='6' boxShadow='lg' bg='white'>
-                                <SkeletonCircle size='10' />
-                                <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
-                              </Box>
-                            ) : (
-                              users && users?.length > 0 && username.length > 0 && users?.slice(0, 4).map((user, id) => (
-                                <button
-                                  key={id}
-                                  onClick={() => accessChat(user._id)}
-                                  className="border pl-4 bg-white rounded-xl  flex shadow1 py-2"
-                                >
-                                  {user.avatar && user.avatar.url ? (
-                                    <Avatar size='md' src={user.avatar.url} alt={`Avatar of ${user.username}`} />
-                                  ) : (
-                                    <Avatar size='md' alt={`Avatar of ${user.username}`} />
-                                  )}
-                                  <div className="pl-5 text-start">
-                                    <h1 className="text-black text-[17px]">{user.username}</h1>
-                                    <h1 className="text-gray-500">{user.name}</h1>
-                                  </div>
-                                </button>
-                              ))
-                            )
-                            }
-                          </div>
-                        </ModalBody>
-                        <ModalFooter>
-                          <Button colorScheme='blue' mr={3} onClick={handleCloseModal} >
-                            Close
-                          </Button>
-                        </ModalFooter>
-                      </ModalContent>
-                    </Modal>
+                    <CreatePersonChat onClose={onClose} onOpen={onOpen} isOpen={isOpen} />
                     <MenuItem> Group Chat</MenuItem>
                   </MenuGroup>
                 </MenuList>
@@ -185,8 +82,10 @@ const ChatPage = () => {
               </Tab>
             </TabList>
             <TabPanels>
-              <TabPanel>
-                <p>one!</p>
+              <TabPanel padding={"0"} className="border-2 border-red-600">
+                <div>
+                  <PersonChat />
+                </div>
               </TabPanel>
               <TabPanel>
                 <p>two!</p>
