@@ -39,7 +39,7 @@ export const chatSlice = createSlice({
         chat: null,
         message: null,
         error: null,
-        chats: null,
+        chats: [],
         activeChat: null,
     },
     reducers: {
@@ -60,6 +60,7 @@ export const chatSlice = createSlice({
             })
             .addCase(createPersonChat.fulfilled, (state, action) => {
                 state.loading = false;
+                state.chats = [...state.chats, action.payload.chat]
                 state.chat = action.payload.chat;
                 state.message = action.payload.message;
                 state.error = null;
