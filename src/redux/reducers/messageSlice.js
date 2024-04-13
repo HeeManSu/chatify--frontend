@@ -62,6 +62,7 @@ export const messageSlice = createSlice({
             .addCase(sendMessages.fulfilled, (state, action) => {
                 state.loading = false;
                 state.chatMessage = action.payload.chatMessage;
+                state.allMessages = [...state.allMessages, action.payload.chatMessage]
                 state.error = null;
             })
             .addCase(sendMessages.rejected, (state, action) => {

@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchAllChats, updateActiveChat } from "../redux/reducers/chatSlice";
+import { clearMessage, fetchAllChats, updateActiveChat } from "../redux/reducers/chatSlice";
 // import { Card, CardBody } from "@chakra-ui/react";
 import Loader from "./Loader";
 import { Avatar } from "@chakra-ui/react";
@@ -9,12 +9,15 @@ import { Link } from "react-router-dom";
 
 const PersonChat = () => {
 
-    const { loading, chats } = useSelector(state => state.chat);
+    const { loading, chats, message } = useSelector(state => state.chat);
 
     console.log(chats)
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(fetchAllChats());
+        if (message) {
+            dispatch(clearMessage());
+        }
     }, []);
 
     return (

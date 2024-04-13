@@ -31,6 +31,7 @@ const SelectedChat = () => {
     await dispatch(fetchAllMessages({ chatId: activeChat?._id }))
   }
 
+
   useEffect(() => {
     fetchMessages();
   }, [activeChat])

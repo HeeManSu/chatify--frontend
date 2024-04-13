@@ -10,6 +10,8 @@ export const createPersonChat = createAsyncThunk('createNewChat', async (secondU
                 withCredentials: true
             }
         );
+        console.log("responseDat: ", response.data);
+
         return response.data;
     } catch (error) {
         throw new Error(error);

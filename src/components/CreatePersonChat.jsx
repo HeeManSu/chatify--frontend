@@ -14,7 +14,7 @@ import {
     SkeletonCircle,
     SkeletonText,
 } from "@chakra-ui/react"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { searchUser } from "../redux/reducers/userSlice";
 import { clearError, clearMessage, createPersonChat, } from "../redux/reducers/chatSlice";
@@ -22,10 +22,9 @@ import toast from "react-hot-toast";
 
 const CreatePersonChat = ({ onClose, isOpen, onOpen }) => {
     const [username, setUsername] = useState("");
-
+    const [currentUser, setCurrentUser] = useState();
     const { users, loading } = useSelector(state => state.user);
-    const { message } = useSelector(state => state.chat);
-
+    const { message, chats } = useSelector(state => state.chat);
     const dispatch = useDispatch();
 
     const handleCloseModal = () => {
@@ -33,18 +32,35 @@ const CreatePersonChat = ({ onClose, isOpen, onOpen }) => {
         onClose();
     }
 
-    const handleSearchClick = (e) => {
-        const newUserName = e.target.value;
-        setUsername(newUserName)
-        dispatch(searchUser(newUserName))
-    }
+    const handleSearchClick = async (e) => {
+        try {
+            const newUserName = e.target.value;
+            setUsername(newUserName);
+            await dispatch(searchUser(newUserName));
+            if (message) {
+                dispatch(clearMessage());
+            }
+        } catch (error) {
+            console.error("Error during user search:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (message) {
+            toast.success(message);
+            dispatch(clearMessage());
+            handleCloseModal();
+        }
+    }, [message, dispatch]);
+
 
     const accessChat = async (secondUserUsername) => {
         try {
             await dispatch(createPersonChat(secondUserUsername));
             if (message) {
                 toast.success(message);
-                dispatch(clearMessage());
+                await dispatch(clearMessage());
+                handleCloseModal();
             }
         } catch (error) {
             toast.error(error.message);
@@ -52,6 +68,29 @@ const CreatePersonChat = ({ onClose, isOpen, onOpen }) => {
         }
     }
 
+    useEffect(() => {
+        const userFromLocalStorage = JSON.parse(localStorage.getItem("userInfo"));
+        if (userFromLocalStorage) {
+            setCurrentUser(userFromLocalStorage?.user);
+        }
+    }, [])
+
+    const getCurrentUserChatUsernames = (currentUserId, chats) => {
+        const chatUsernames = new Set();
+
+        chats.forEach(chat => {
+            chat.users.forEach(user => {
+                if (user._id !== currentUserId) {
+                    chatUsernames.add(user.username);
+                }
+            });
+        });
+
+        return Array.from(chatUsernames);
+    };
+
+    const existingChatUsernames = getCurrentUserChatUsernames(currentUser?._id, chats);
+    const filteredUsers = users.filter(user => !existingChatUsernames.includes(user.username));
 
     return (
         <div>
@@ -81,7 +120,7 @@ const CreatePersonChat = ({ onClose, isOpen, onOpen }) => {
                                     <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
                                 </Box>
                             ) : (
-                                users && users?.length > 0 && username.length > 0 && users?.slice(0, 4).map((user, id) => (
+                                filteredUsers && filteredUsers?.length > 0 && username.length > 0 && filteredUsers?.slice(0, 4).map((user, id) => (
                                     <button
                                         key={id}
                                         onClick={() => accessChat(user.username)}
