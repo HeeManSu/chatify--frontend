@@ -19,6 +19,7 @@
     "axios": "^1.6.5",
     "clsx": "^2.1.0",
     "framer-motion": "^10.17.9",
+    "is-plain-object": "^5.0.0",
     "lottie-web": "^5.12.2",
     "protected-route-react": "^1.0.1",
     "react": "^18.2.0",
@@ -27,6 +28,7 @@
     "react-icons": "^4.12.0",
     "react-redux": "^9.0.4",
     "react-router-dom": "^6.21.1",
+    "react-scrollable-feed": "^2.0.1",
     "redux-persist": "^6.0.0",
     "tailwind-merge": "^2.2.0"
   },
