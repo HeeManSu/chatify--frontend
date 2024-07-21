@@ -70,16 +70,42 @@ export const loadUser = createAsyncThunk('loadUser', async () => {
     }
 })
 
+export const logoutUser = createAsyncThunk('logout', async () => {
+    try {
+        const { data } = await axios.get(`${server}/logout`, {
+            withCredentials: true,
+        })
+
+        console.log("data:", data);
+
+        return data;
+    } catch (error) {
+        throw new Error(error);
+    }
+})
+
 
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
-        // loading: false,
+        loading: false,
+        user: null,
         error: null,
-        message: null,
-        // isAuthenticated: false
+        message: "",
+        isAuthenticated: false,
+        users: [],
     },
-    reducers: {},
+    reducers: {
+        resetUserState: state => {
+            state.users = [];
+        },
+        clearError: state => {
+            state.error = null;
+        },
+        clearMessage: state => {
+            state.message = null;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(registerUser.pending, (state) => {
@@ -134,5 +160,22 @@ export const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.error;
             })
+            .addCase(logoutUser.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(logoutUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.isAuthenticated = false;
+                state.user = null;
+                state.message = action.payload;
+            })
+            .addCase(logoutUser.rejected, (state, action) => {
+                state.loading = false;
+                state.isAuthenticated = true;
+                state.error = action.payload;
+            })
     }
 })
+
+
+export const { resetUserState, clearError, clearMessage } = userSlice.actions;
