@@ -30,10 +30,8 @@ function App() {
               isAuthenticated={!isAuthenticated}
               redirect="/chat"
             >
-
               <RegisterPage />
             </ProtectedRoute>
-
           } />
           <Route path='/chat' element={<ChatPage />} />
           <Route path='/chat/:chatId' element={<SelectedChat />} />

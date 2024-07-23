@@ -17,7 +17,6 @@ const ScrollableChat = ({ allMessages }) => {
     }
   }, [])
 
-  console.log("currentUser: ", currentUser?._id);
   const isSameSender = (allMessages, message, index, userId) => {
     return (
       index < allMessages?.length - 1 &&
@@ -71,8 +70,6 @@ const ScrollableChat = ({ allMessages }) => {
     }
   }
 
-  console.log("allMessages: ", allMessages);
-  console.log("activeChat ", activeChat);
 
   function print() {
     allMessages.map((message) => {

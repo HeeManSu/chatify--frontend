@@ -5,7 +5,7 @@ import Loader from "./Loader";
 import { Avatar } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-const PersonChat = () => {
+const GroupChat = () => {
     const { loading, chats, message } = useSelector(state => state.chat);
     const dispatch = useDispatch();
 
@@ -19,18 +19,13 @@ const PersonChat = () => {
         }
     }, [dispatch, message]);
 
-    const personChats = chats.filter(chat => !chat.isGroupChat);
+    const groupChats = chats.filter(chat => chat.isGroupChat);
 
-    // Reverse the 'personChats' array before mapping
-    const reversedChats = [...personChats].reverse();
-
-    const handleChatClick = (chat) => {
-        dispatch(updateActiveChat({ activeChat: chat }));
-        localStorage.setItem('activeChat', JSON.stringify(chat));
-    };
+    // Reverse the 'groupChats' array before mapping
+    const reversedChats = [...groupChats].reverse();
 
     return (
-        <div className="black m-0">
+        <div className=" m-0">
             {
                 loading ? (
                     <Loader />
@@ -38,12 +33,12 @@ const PersonChat = () => {
                     reversedChats.map((chat, id) => {
                         const isLastChat = id === reversedChats.length - 1;
                         return (
-                            <div key={id} onClick={() => handleChatClick(chat)}>
+                            <div key={id} onClick={() => dispatch(updateActiveChat({ activeChat: chat }))}>
                                 <Link to={`/chat/${chat._id}`}>
                                     <div className="flex justify-between">
                                         <div className="flex">
                                             {chat?.users[0]?.avatar?.url ? (
-                                                <Avatar size={'md'} src={chat.users[1].avatar.url} />
+                                                <Avatar size={'md'} src={chat.users[0].avatar.url} />
                                             ) : (
                                                 <Avatar size={'md'} alt={`Avatar of ${chat.username}`} />
                                             )}
@@ -69,7 +64,7 @@ const PersonChat = () => {
                 )
             }
         </div>
-    );
-};
+    )
+}
 
-export default PersonChat;
+export default GroupChat;

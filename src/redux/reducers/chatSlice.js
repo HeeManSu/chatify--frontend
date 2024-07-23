@@ -4,33 +4,35 @@ const server = "http://localhost:4002/api/v1";
 
 export const createPersonChat = createAsyncThunk('createNewChat', async (secondUserName) => {
     try {
-        const response = await axios.post(`${server}/personchat`,
-            { secondUserName },
-            {
-                withCredentials: true
-            }
-        );
-        console.log("responseDat: ", response.data);
-
+        const response = await axios.post(`${server}/personchat`, { secondUserName }, { withCredentials: true });
         return response.data;
     } catch (error) {
         throw new Error(error);
     }
 });
 
-export const fetchAllChats = createAsyncThunk('fetchAllChats', async () => {
+export const createGroupChat = createAsyncThunk('createGroupChat', async (formData) => {
     try {
-        const response = await axios.get(`${server}/`,
-            {
-                withCredentials: true
-            });
-        return response.data
+        const response = await axios.post(`${server}/groupchat`, formData, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return response.data;
     } catch (error) {
-        throw new Error(error)
+        throw new Error(error.response?.data?.message || error.message);
     }
 })
 
-
+export const fetchAllChats = createAsyncThunk('fetchAllChats', async () => {
+    try {
+        const response = await axios.get(`${server}/`, { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        throw new Error(error);
+    }
+});
 
 export const chatSlice = createSlice({
     name: 'chat',
@@ -60,12 +62,26 @@ export const chatSlice = createSlice({
             })
             .addCase(createPersonChat.fulfilled, (state, action) => {
                 state.loading = false;
-                state.chats = [...state.chats, action.payload.chat]
+                state.chats.unshift(action.payload.chat);
                 state.chat = action.payload.chat;
                 state.message = action.payload.message;
                 state.error = null;
             })
             .addCase(createPersonChat.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(createGroupChat.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(createGroupChat.fulfilled, (state, action) => {
+                state.loading = false;
+                state.chats.unshift(action.payload.newChat);
+                state.chat = action.payload.newChat;
+                state.message = action.payload.message;
+                state.error = null;
+            })
+            .addCase(createGroupChat.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
@@ -81,8 +97,9 @@ export const chatSlice = createSlice({
             .addCase(fetchAllChats.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
-            })
+            });
     }
-})
+});
 
 export const { clearError, clearMessage, updateActiveChat } = chatSlice.actions;
+export default chatSlice.reducer;

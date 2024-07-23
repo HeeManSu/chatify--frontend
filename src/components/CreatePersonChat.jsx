@@ -10,29 +10,27 @@ import {
     FormLabel,
     Input,
     Avatar,
-    Box,
-    SkeletonCircle,
-    SkeletonText,
 } from "@chakra-ui/react"
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { searchUser } from "../redux/reducers/userSlice";
+import { resetUserState, searchUser } from "../redux/reducers/userSlice";
 import { clearError, clearMessage, createPersonChat, } from "../redux/reducers/chatSlice";
 import toast from "react-hot-toast";
 
-const CreatePersonChat = ({ onClose, isOpen, onOpen }) => {
+const CreatePersonChat = ({ onClose, isOpen }) => {
     const [username, setUsername] = useState("");
     const [currentUser, setCurrentUser] = useState();
-    const { users, loading } = useSelector(state => state.user);
+    const { users } = useSelector(state => state.user);
     const { message, chats } = useSelector(state => state.chat);
     const dispatch = useDispatch();
 
-    const handleCloseModal = () => {
+    const handleCloseModal = useCallback(() => {
         setUsername("");
         onClose();
-    }
+    }, [setUsername, onClose]);
 
     const handleSearchClick = async (e) => {
+        e.preventDefault(); // Prevent default form submission behavior
         try {
             const newUserName = e.target.value;
             setUsername(newUserName);
@@ -45,14 +43,15 @@ const CreatePersonChat = ({ onClose, isOpen, onOpen }) => {
         }
     };
 
+
     useEffect(() => {
         if (message) {
             toast.success(message);
             dispatch(clearMessage());
             handleCloseModal();
         }
-    }, [message, dispatch]);
-
+        dispatch(resetUserState());
+    }, [message, dispatch, handleCloseModal]);
 
     const accessChat = async (secondUserUsername) => {
         try {
@@ -77,6 +76,7 @@ const CreatePersonChat = ({ onClose, isOpen, onOpen }) => {
 
     const getCurrentUserChatUsernames = (currentUserId, chats) => {
         const chatUsernames = new Set();
+        chatUsernames.add(currentUser?._id);
 
         chats.forEach(chat => {
             chat.users.forEach(user => {
@@ -94,7 +94,7 @@ const CreatePersonChat = ({ onClose, isOpen, onOpen }) => {
 
     return (
         <div>
-            <Modal size='xl' isOpen={isOpen} onClose={onOpen}>
+            <Modal size='xl' isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent className="mx-6">
                     <ModalHeader>New person chat</ModalHeader>
@@ -110,16 +110,13 @@ const CreatePersonChat = ({ onClose, isOpen, onOpen }) => {
                                     placeholder="Enter a username"
                                     value={username}
                                     onChange={handleSearchClick}
+                                    autoFocus={true}
                                 />
                             </FormLabel>
                         </FormControl>
-                        <div className="flex flex-col pt-4">
-                            {loading ? (
-                                <Box padding='6' boxShadow='lg' bg='white'>
-                                    <SkeletonCircle size='10' />
-                                    <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
-                                </Box>
-                            ) : (
+                        <div className="flex flex-col h-fit pt-4">
+                            {
+
                                 filteredUsers && filteredUsers?.length > 0 && username.length > 0 && filteredUsers?.slice(0, 4).map((user, id) => (
                                     <button
                                         key={id}
@@ -137,7 +134,6 @@ const CreatePersonChat = ({ onClose, isOpen, onOpen }) => {
                                         </div>
                                     </button>
                                 ))
-                            )
                             }
                         </div>
                     </ModalBody>

@@ -1,13 +1,14 @@
 import { Avatar, Button, Input } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import wave from "../assets/wave.svg";
 import linkedin from "../assets/linkedin.svg";
 import twitter from "../assets/twitter.svg";
 import discord from "../assets/discord.svg";
 import github from "../assets/github.svg";
-import { useDispatch } from "react-redux";
-import { registerUser } from "../redux/reducers/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { clearMessage, registerUser } from "../redux/reducers/userSlice";
+
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -15,8 +16,18 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [image, setImage] = useState();
+  const { message } = useSelector((state) => state.user);
+
 
   const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    if (message) {
+      dispatch(clearMessage());
+    }
+  }, []);
+
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -39,7 +50,7 @@ const RegisterPage = () => {
     <div className="flex flex-col lg:flex-row h-screen">
       <div className="w-full h-28 md:h-16 login-mobile-bg block lg:hidden">
         <div className="bg-blue-500 h-full -mb-1" />
-        <img src={wave} alt="no_image"/>
+        <img src={wave} alt="no_image" />
       </div>
       <div className="backgroundimage w-1/2 hidden lg:flex justify-between flex-col">
         <div className="p-5">

@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Button, Input } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import wave from "../assets/wave.svg";
 import linkedin from "../assets/linkedin.svg";
@@ -8,7 +8,8 @@ import twitter from "../assets/twitter.svg";
 import discord from "../assets/discord.svg";
 import github from "../assets/github.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../redux/reducers/userSlice";
+import { clearMessage, loginUser } from "../redux/reducers/userSlice";
+import { toast } from 'react-hot-toast';
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -16,10 +17,22 @@ const LoginPage = () => {
 
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.user.loading);
+  const { message } = useSelector((state) => state.user);
 
-  const submitHandler = (e) => {
+
+  useEffect(() => {
+    if (message) {
+      dispatch(clearMessage());
+    }
+  }, []);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    dispatch(loginUser({ username, password }));
+    await dispatch(loginUser({ username, password }));
+    if (message) {
+      toast.success(message);
+      dispatch(clearMessage());
+    }
   };
 
   return (

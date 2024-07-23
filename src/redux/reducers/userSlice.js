@@ -33,7 +33,6 @@ export const loginUser = createAsyncThunk('loginUser', async ({ username, passwo
                 withCredentials: true,
             }
         );
-        console.log("response: ", response);
 
         const user = response.data;
         localStorage.setItem("userInfo", JSON.stringify(user));
@@ -76,7 +75,6 @@ export const logoutUser = createAsyncThunk('logout', async () => {
             withCredentials: true,
         })
 
-        console.log("data:", data);
 
         return data;
     } catch (error) {
