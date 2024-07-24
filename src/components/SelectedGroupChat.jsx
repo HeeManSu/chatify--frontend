@@ -20,7 +20,7 @@ const SelectedGroupChat = () => {
     const { isOpen: isManageOpen, onOpen: onManageOpen, onClose: onManageClose } = useDisclosure();
 
     const handleBackButtonClick = () => {
-        navigate("/chat");
+        navigate("/chat?tab=group");
     };
 
     const activeChat = JSON.parse(localStorage.getItem('activeChat'));
@@ -36,6 +36,7 @@ const SelectedGroupChat = () => {
 
     useEffect(() => {
         fetchMessages();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeChat?._id, dispatch]);
 
     const typingHandler = (e) => {
@@ -58,7 +59,6 @@ const SelectedGroupChat = () => {
         return text;
     };
 
-
     return (
         <div className="flex flex-col h-screen">
             <div className="border-red-400 border-2 flex items-center bg-blue-500 px-2 h-14">
@@ -78,8 +78,13 @@ const SelectedGroupChat = () => {
                         </div>
                     </div>
                     <Menu>
-                        <MenuButton as={Button} background="transparent">
-                            <BsThreeDotsVertical className="text-white text-[23px] mr-2" />
+                        <MenuButton
+                            as={Button}
+                            background="transparent"
+                            _hover={{ background: "transparent" }}
+                            _expanded={{ background: "transparent" }}
+                            _focus={{ boxShadow: "none", background: "transparent" }}
+                        >                              <BsThreeDotsVertical className="text-white text-[23px] mr-2" />
                         </MenuButton>
                         <MenuList>
                             <MenuItem onClick={onManageOpen}>Manage Group</MenuItem>

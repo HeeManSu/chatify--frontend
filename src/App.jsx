@@ -32,6 +32,7 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path='/chat' element={<ChatPage />} />
+          <Route path="/group-chat" element={<ChatPage />} />
           <Route path='/chat/:chatId' element={<SelectedChat />} />
           <Route path="/group-chat/:chatId" element={<SelectedGroupChat />} />
         </Routes>

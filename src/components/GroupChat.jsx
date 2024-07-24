@@ -21,7 +21,7 @@ const GroupChat = () => {
     }, [dispatch, message]);
 
     const groupChats = chats.filter(chat => chat.isGroupChat);
-
+    const sortedChats = groupChats.sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity));
     // Reverse the 'groupChats' array before mapping
     const reversedChats = [...groupChats].reverse();
 
@@ -37,10 +37,11 @@ const GroupChat = () => {
                 loading ? (
                     <Loader />
                 ) : (
-                    reversedChats.map((chat, id) => {
+                    sortedChats.map((chat, id) => {
                         const isLastChat = id === reversedChats.length - 1;
+                        const latestMessage = chat.latestMessage ? chat.latestMessage.content : "No messages yet";
                         return (
-                            <div key={id} onClick={() => handleChatClick(chat)}>
+                            <div className="hover:cursor-pointer" key={id} onClick={() => handleChatClick(chat)}>
                                 <div className="flex justify-between">
                                     <div className="flex">
                                         {chat?.users[0]?.avatar?.url ? (
@@ -52,12 +53,14 @@ const GroupChat = () => {
                                             <h1 className="text-black text-[17px]">
                                                 {chat.chatName}
                                             </h1>
-                                            <h1>new messages</h1>
+                                            <h1 className="text-green-600 font-semibold text-[15px]">
+                                                {latestMessage}
+                                            </h1>
                                         </div>
                                     </div>
-                                    <div className="text-gray-600">
+                                    {/* <div className="text-gray-600">
                                         5:30
-                                    </div>
+                                    </div> */}
                                 </div>
                                 {
                                     !isLastChat && <div className="border-gray-300 max-w-[98%] mx-auto border my-[8px]">

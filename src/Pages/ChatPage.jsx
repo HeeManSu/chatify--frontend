@@ -13,7 +13,7 @@ import CreateGroupChat from "../components/CreateGroupChat";
 import PersonChat from "../components/PersonChat";
 import { useDispatch, useSelector } from 'react-redux';
 import { clearMessage, logoutUser } from "../redux/reducers/userSlice";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
 import GroupChat from "../components/GroupChat";
 
@@ -23,6 +23,7 @@ const ChatPage = () => {
   const { message } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (message) {
@@ -38,6 +39,10 @@ const ChatPage = () => {
       dispatch(clearMessage());
     }
   };
+
+  // Determine the initial tab index based on the query parameter
+  const queryParams = new URLSearchParams(location.search);
+  const initialTabIndex = queryParams.get('tab') === 'group' ? 1 : 0;
 
   return (
     <div className="h-full w-full">
@@ -84,7 +89,7 @@ const ChatPage = () => {
               </Menu>
             </div>
           </div>
-          <Tabs className="w-full">
+          <Tabs className="w-full" defaultIndex={initialTabIndex}>
             <TabList>
               <Tab width="50%" textColor="blue.100" _active={{}} _selected={{ borderBottomColor: 'blue.100', textColor: 'white', borderWidth: '3px' }}>
                 Chats
