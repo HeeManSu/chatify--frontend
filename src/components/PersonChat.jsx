@@ -1,28 +1,19 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { clearMessage, fetchAllChats, updateActiveChat } from "../redux/reducers/chatSlice";
-import Loader from "./Loader";
-import { Avatar } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { fetchAllChats, updateActiveChat } from '../redux/reducers/chatSlice';
+import Loader from './Loader';
+import { Avatar } from '@chakra-ui/react';
 
 const PersonChat = () => {
-    const { loading, chats, message } = useSelector(state => state.chat);
+    const { loading, chats } = useSelector(state => state.chat);
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(fetchAllChats());
     }, [dispatch]);
 
-    useEffect(() => {
-        if (message) {
-            dispatch(clearMessage());
-        }
-    }, [dispatch, message]);
-
     const personChats = chats.filter(chat => !chat.isGroupChat);
-
-    // Reverse the 'personChats' array before mapping
-    const reversedChats = [...personChats].reverse();
 
     const handleChatClick = (chat) => {
         dispatch(updateActiveChat({ activeChat: chat }));
@@ -35,10 +26,11 @@ const PersonChat = () => {
                 loading ? (
                     <Loader />
                 ) : (
-                    reversedChats.map((chat, id) => {
-                        const isLastChat = id === reversedChats.length - 1;
+                    personChats.map((chat, id) => {
+                        const isLastChat = id === personChats.length - 1;
+                        const latestMessage = chat.latestMessage ? chat.latestMessage.content : "No messages yet";
                         return (
-                            <div key={id} onClick={() => handleChatClick(chat)}>
+                            <div className='pl-2 py-1' key={id} onClick={() => handleChatClick(chat)}>
                                 <Link to={`/chat/${chat._id}`}>
                                     <div className="flex justify-between">
                                         <div className="flex">
@@ -49,14 +41,16 @@ const PersonChat = () => {
                                             )}
                                             <div className="pl-[15px]">
                                                 <h1 className="text-black text-[17px]">
-                                                    {chat.chatName}
+                                                    {chat.users[1].name}
                                                 </h1>
-                                                <h1>new messages</h1>
+                                                <h1 className="text-green-600 font-semibold text-[15px]">
+                                                    {latestMessage}
+                                                </h1>
                                             </div>
                                         </div>
-                                        <div className="text-gray-600">
+                                        {/* <div className="text-gray-600">
                                             5:30
-                                        </div>
+                                        </div> */}
                                     </div>
                                     {
                                         !isLastChat && <div className="border-gray-300 max-w-[98%] mx-auto border my-[8px]">

@@ -49,6 +49,42 @@ export const renameGroup = createAsyncThunk(
     }
 );
 
+export const addToGroup = createAsyncThunk('addToGroup', async ({ chatId, userId }) => {
+    try {
+        const response = await axios.put(`${server}/newadd`, { chatId, userId }, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || error.message);
+    }
+});
+
+export const removeFromGroup = createAsyncThunk('removeFromGroup', async ({ chatId, userId }) => {
+    try {
+        const response = await axios.put(`${server}/removefromGroup`, { chatId, userId }, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || error.message);
+    }
+});
+
+
+
+export const deletePersonChat = createAsyncThunk('deletePersonChat', async (chatId) => {
+    try {
+        const response = await axios.delete(`${server}/personchat/${chatId}`, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || error.message);
+    }
+});
+
+
 
 
 export const chatSlice = createSlice({
@@ -124,6 +160,47 @@ export const chatSlice = createSlice({
             })
             .addCase(renameGroup.rejected, (state, action) => {
                 state.message = action.payload;
+            })
+            .addCase(addToGroup.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(addToGroup.fulfilled, (state, action) => {
+                state.loading = false;
+                const updatedChat = action.payload.added;
+                state.chats = state.chats.map(chat => chat._id === updatedChat._id ? updatedChat : chat);
+                if (state.activeChat && state.activeChat._id === updatedChat._id) {
+                    state.activeChat = updatedChat;
+                }
+            })
+            .addCase(addToGroup.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(removeFromGroup.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(removeFromGroup.fulfilled, (state, action) => {
+                state.loading = false;
+                const updatedChat = action.payload.removed;
+                state.chats = state.chats.map(chat => chat._id === updatedChat._id ? updatedChat : chat);
+                if (state.activeChat && state.activeChat._id === updatedChat._id) {
+                    state.activeChat = updatedChat;
+                }
+            })
+            .addCase(removeFromGroup.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(deletePersonChat.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(deletePersonChat.fulfilled, (state, action) => {
+                state.loading = false;
+                state.chats = state.chats.filter(chat => chat._id !== action.meta.arg);
+            })
+            .addCase(deletePersonChat.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
             });
     }
 });

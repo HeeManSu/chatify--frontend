@@ -14,7 +14,6 @@ import PersonChat from "../components/PersonChat";
 import { useDispatch, useSelector } from 'react-redux';
 import { clearMessage, logoutUser } from "../redux/reducers/userSlice";
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 import { useEffect } from "react";
 import GroupChat from "../components/GroupChat";
 
@@ -35,7 +34,7 @@ const ChatPage = () => {
     await dispatch(logoutUser());
     navigate("/");
     if (message) {
-      toast.success(message);
+      // toast.success(message);
       dispatch(clearMessage());
     }
   };

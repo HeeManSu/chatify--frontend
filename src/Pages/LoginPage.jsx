@@ -9,7 +9,6 @@ import discord from "../assets/discord.svg";
 import github from "../assets/github.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { clearMessage, loginUser } from "../redux/reducers/userSlice";
-import { toast } from 'react-hot-toast';
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -31,7 +30,7 @@ const LoginPage = () => {
     e.preventDefault();
     await dispatch(loginUser({ username, password }));
     if (message) {
-      toast.success(message);
+      // toast.success(message);
       dispatch(clearMessage());
     }
   };

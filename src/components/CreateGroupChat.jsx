@@ -50,7 +50,7 @@ const CreateGroupChat = ({ onClose, isOpen }) => {
         try {
             await dispatch(createGroupChat(formData));
             if (message) {
-                toast.success(message);
+                // toast.success(message);
                 dispatch(clearMessage());
                 handleCloseModal();
             }
@@ -66,7 +66,7 @@ const CreateGroupChat = ({ onClose, isOpen }) => {
 
     useEffect(() => {
         if (message) {
-            toast.success(message);
+            // toast.success(message);
             dispatch(clearMessage());
             handleCloseModal();
         }

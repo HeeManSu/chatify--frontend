@@ -46,7 +46,7 @@ const CreatePersonChat = ({ onClose, isOpen }) => {
 
     useEffect(() => {
         if (message) {
-            toast.success(message);
+            // toast.success(message);
             dispatch(clearMessage());
             handleCloseModal();
         }
@@ -57,7 +57,7 @@ const CreatePersonChat = ({ onClose, isOpen }) => {
         try {
             await dispatch(createPersonChat(secondUserUsername));
             if (message) {
-                toast.success(message);
+                // toast.success(message);
                 await dispatch(clearMessage());
                 handleCloseModal();
             }
