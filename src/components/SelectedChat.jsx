@@ -31,6 +31,7 @@ const SelectedChat = () => {
 
   useEffect(() => {
     fetchMessages();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeChat?._id, dispatch]);
 
   const typingHandler = (e) => {

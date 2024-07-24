@@ -7,12 +7,10 @@ import ChatPage from './Pages/ChatPage';
 import { useSelector } from 'react-redux';
 import { ProtectedRoute } from 'protected-route-react'
 import SelectedChat from './components/SelectedChat';
-
+import SelectedGroupChat from './components/SelectedGroupChat';
 
 function App() {
-
   const { isAuthenticated } = useSelector(state => state.user);
-
   return (
     <Router>
       <>
@@ -35,10 +33,10 @@ function App() {
           } />
           <Route path='/chat' element={<ChatPage />} />
           <Route path='/chat/:chatId' element={<SelectedChat />} />
+          <Route path="/group-chat/:chatId" element={<SelectedGroupChat />} />
         </Routes>
         <Toaster />
       </>
-
     </Router>
   )
 }

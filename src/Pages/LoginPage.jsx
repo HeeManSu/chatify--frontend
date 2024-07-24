@@ -24,6 +24,7 @@ const LoginPage = () => {
     if (message) {
       dispatch(clearMessage());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submitHandler = async (e) => {

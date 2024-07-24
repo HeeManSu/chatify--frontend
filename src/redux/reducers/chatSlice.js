@@ -34,6 +34,23 @@ export const fetchAllChats = createAsyncThunk('fetchAllChats', async () => {
     }
 });
 
+export const renameGroup = createAsyncThunk(
+    'chat/rename',
+    async ({ chatId, newName }, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`${server}/rename`, { newChatName: newName, chatId: chatId },
+                { withCredentials: true }
+
+            );
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+
+
 export const chatSlice = createSlice({
     name: 'chat',
     initialState: {
@@ -97,6 +114,16 @@ export const chatSlice = createSlice({
             .addCase(fetchAllChats.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+            })
+            .addCase(renameGroup.fulfilled, (state, action) => {
+                const { chatId, name } = action.payload;
+                const chat = state.chats.find(chat => chat._id === chatId);
+                if (chat) {
+                    chat.chatName = name;
+                }
+            })
+            .addCase(renameGroup.rejected, (state, action) => {
+                state.message = action.payload;
             });
     }
 });

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { useSelector } from 'react-redux';
 // import ScrollableFeed from 'react-scrollable-feed'
 import ScrollableFeed from 'react-scrollable-feed';
 import { Avatar, Tooltip } from '@chakra-ui/react';
@@ -7,7 +6,9 @@ import { PropTypes } from 'prop-types';
 
 const ScrollableChat = ({ allMessages }) => {
   const [currentUser, setCurrentUser] = useState();
-  const activeChat = useSelector((state) => state.chat.activeChat);
+  const activeChat = JSON.parse(localStorage.getItem('activeChat'));
+
+  console.log(activeChat);
 
 
   useEffect(() => {
@@ -15,7 +16,9 @@ const ScrollableChat = ({ allMessages }) => {
     if (userFromLocalStorage) {
       setCurrentUser(userFromLocalStorage?.user);
     }
-  }, [])
+  }, []);
+
+  console.log(currentUser);
 
   const isSameSender = (allMessages, message, index, userId) => {
     return (
@@ -65,6 +68,7 @@ const ScrollableChat = ({ allMessages }) => {
 
 
   function getSenderAvatar(currentUser, users) {
+    console.log(users)
     if (currentUser && currentUser?._id) {
       return users[0]?._id === currentUser?._id ? users[1]?.avatar?.url : users[0]?.avatar?.url;
     }
